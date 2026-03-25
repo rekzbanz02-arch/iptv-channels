@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Misamis Oriental Fiesta Finder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --red:       #b91c1c;
+  --red-deep:  #7f1d1d;
+  --red-light: #fee2e2;
+  --gold:      #d97706;
+  --gold-light:#fef3c7;
+  --ink:       #1c1917;
+  --ink-muted: #57534e;
+  --ink-faint: #a8a29e;
+  --paper:     #fdfaf6;
+  --white:     #ffffff;
+  --border:    #e7e0d8;
+  --radius:    10px;
+  --shadow-sm: 0 1px 4px rgba(0,0,0,.06);
+  --shadow-md: 0 4px 16px rgba(0,0,0,.10);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Crimson Pro', Georgia, serif;
+  background: var(--paper);
+  color: var(--ink);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+.bunting {
+  height: 8px;
+  background: repeating-linear-gradient(90deg,
+    var(--red) 0px, var(--red) 24px,
+    var(--gold) 24px, var(--gold) 48px,
+    #15803d 48px, #15803d 72px,
+    #1d4ed8 72px, #1d4ed8 96px,
+    var(--red) 96px);
+}
+header {
+  background: linear-gradient(160deg, var(--red-deep) 0%, var(--red) 60%, #c2410c 100%);
+  color: var(--white);
+  padding: 40px 24px 36px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 20% 50%, rgba(255,255,255,.05) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(255,255,255,.04) 0%, transparent 40%);
+  pointer-events: none;
+}
+.header-eyebrow {
+  font-size: 11px; font-weight: 600; letter-spacing: 4px;
+  text-transform: uppercase; color: rgba(255,255,255,.65); margin-bottom: 10px;
+}
+header h1 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(1.8rem, 5vw, 3rem);
+  font-weight: 900; line-height: 1.1; margin-bottom: 12px;
+}
+header h1 em { font-style: italic; color: var(--gold-light); }
+.header-sub { font-size: 1rem; color: rgba(255,255,255,.75); font-style: italic; }
+main {
+  flex: 1; max-width: 980px; margin: 0 auto;
+  padding: 28px 20px 40px; width: 100%;
+}
+#today-banner {
+  display: none;
+  background: linear-gradient(135deg, #14532d 0%, #15803d 100%);
+  border-radius: var(--radius); padding: 16px 20px;
+  margin-bottom: 22px; color: white;
+}
+#today-banner.visible { display: flex; align-items: flex-start; gap: 14px; }
+.today-icon { font-size: 1.8rem; flex-shrink: 0; animation: pulse 2s ease-in-out infinite; }
+@keyframes pulse { 0%,100% { transform:scale(1); } 50% { transform:scale(1.12); } }
+.today-text strong {
+  font-family: 'Playfair Display', serif; font-size: 1rem;
+  font-weight: 700; display: block; margin-bottom: 4px;
+}
+.today-text span { font-size: .9rem; color: rgba(255,255,255,.85); line-height: 1.5; }
+.filters-wrap {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 18px 20px;
+  margin-bottom: 20px; box-shadow: var(--shadow-sm);
+}
+.filters-label {
+  font-size: 10.5px; font-weight: 600; letter-spacing: 3px;
+  text-transform: uppercase; color: var(--ink-faint); margin-bottom: 12px;
+}
+.filters-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.filter-group { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 160px; }
+.filter-group label {
+  font-size: 11px; font-weight: 600; letter-spacing: 1.5px;
+  text-transform: uppercase; color: var(--ink-muted);
+}
+.filter-group select,
+.filter-group input {
+  padding: 9px 12px; border-radius: 6px; border: 1.5px solid var(--border);
+  font-family: 'Crimson Pro', serif; font-size: 15px; color: var(--ink);
+  background: var(--paper); outline: none;
+  transition: border-color .2s, box-shadow .2s; width: 100%;
+}
+.filter-group select:focus,
+.filter-group input:focus {
+  border-color: var(--red); box-shadow: 0 0 0 3px rgba(185,28,28,.12);
+}
+.btn-clear {
+  padding: 9px 16px; border: 1.5px solid var(--border); border-radius: 6px;
+  background: transparent; font-family: 'Crimson Pro', serif;
+  font-size: 14px; color: var(--ink-muted); cursor: pointer;
+  white-space: nowrap; align-self: flex-end;
+  transition: border-color .2s, color .2s, background .2s;
+}
+.btn-clear:hover { border-color: var(--red); color: var(--red); background: var(--red-light); }
+.meta-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 14px; flex-wrap: wrap; gap: 8px;
+}
+.result-count { font-size: 13px; color: var(--ink-muted); font-style: italic; }
+.result-count strong { color: var(--ink); font-style: normal; font-weight: 600; }
+.sort-wrap { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--ink-muted); }
+.sort-wrap label { font-size: 11px; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; }
+.sort-wrap select {
+  padding: 5px 8px; border: 1px solid var(--border); border-radius: 5px;
+  font-family: 'Crimson Pro', serif; font-size: 13px;
+  background: var(--white); color: var(--ink); outline: none; cursor: pointer;
+}
+#list { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+.card {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 18px 20px; box-shadow: var(--shadow-sm);
+  transition: transform .2s ease, box-shadow .2s ease, border-color .2s;
+  animation: fadeSlideIn .3s ease both; position: relative; overflow: hidden;
+}
+.card::before {
+  content: ''; position: absolute;
+  left: 0; top: 0; bottom: 0; width: 4px;
+  background: var(--red); border-radius: 4px 0 0 4px;
+}
+.card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); border-color: #d6ccc2; }
+.card.is-today { border-color: #86efac; }
+.card.is-today::before { background: #15803d; }
+.card.is-city::before { background: var(--gold); }
+.card-header {
+  display: flex; align-items: flex-start;
+  justify-content: space-between; gap: 8px; margin-bottom: 10px;
+}
+.place {
+  font-family: 'Playfair Display', serif; font-size: 1.05rem;
+  font-weight: 700; color: var(--ink); line-height: 1.25;
+}
+.type-pill {
+  font-size: 10px; font-weight: 700; letter-spacing: 1px;
+  text-transform: uppercase; padding: 3px 7px;
+  border-radius: 20px; white-space: nowrap; flex-shrink: 0;
+}
+.type-pill.municipality { background: var(--red-light); color: var(--red); }
+.type-pill.city         { background: var(--gold-light); color: #92400e; }
+.type-pill.barangay     { background: #ede9fe; color: #5b21b6; }
+.today-tag {
+  font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+  padding: 3px 7px; border-radius: 20px; background: #dcfce7; color: #15803d; flex-shrink: 0;
+}
+.card-date { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
+.date-icon { font-size: .9rem; }
+.date-text { font-size: .95rem; color: var(--ink-muted); font-style: italic; }
+.date-text strong { font-style: normal; color: var(--ink); font-weight: 600; }
+.patron-row { display: flex; align-items: baseline; gap: 6px; font-size: .9rem; }
+.patron-label {
+  font-size: 10px; font-weight: 700; letter-spacing: 1.5px;
+  text-transform: uppercase; color: var(--ink-faint); white-space: nowrap; flex-shrink: 0;
+}
+.patron-name { color: var(--red-deep); font-weight: 600; font-style: italic; line-height: 1.35; }
+.card-group { display: flex; flex-direction: column; }
+.barangay-toggle {
+  display: flex; align-items: center; gap: 6px;
+  margin-top: 12px; padding-top: 10px;
+  border-top: 1px dashed #c4b5fd;
+  border-left: none; border-right: none; border-bottom: none;
+  background: none; width: 100%; cursor: pointer;
+  font-family: 'Crimson Pro', serif; font-size: 12px;
+  font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase;
+  color: #7c3aed; text-align: left; transition: color .2s;
+}
+.barangay-toggle:hover { color: #5b21b6; }
+.toggle-arrow { font-size: 10px; transition: transform .25s ease; display: inline-block; }
+.barangay-toggle.open .toggle-arrow { transform: rotate(180deg); }
+.barangay-drawer {
+  overflow: hidden; max-height: 0; opacity: 0;
+  transition: max-height .35s ease, opacity .3s ease;
+}
+.barangay-drawer.open { max-height: 4000px; opacity: 1; }
+.barangay-drawer-inner {
+  padding-top: 6px; padding-left: 16px;
+  border-left: 2px solid #c4b5fd; margin-left: 20px;
+}
+.card.is-barangay { box-shadow: none; border-color: #ddd6fe; margin-top: 6px; }
+.card.is-barangay::before { background: #7c3aed; }
+.empty-state {
+  grid-column: 1 / -1; text-align: center;
+  padding: 56px 20px; color: var(--ink-faint);
+}
+.empty-state .empty-icon { font-size: 2.5rem; margin-bottom: 12px; }
+.empty-state h3 {
+  font-family: 'Playfair Display', serif; font-size: 1.2rem;
+  color: var(--ink-muted); margin-bottom: 6px;
+}
+.empty-state p { font-size: .95rem; font-style: italic; }
+footer {
+  border-top: 1px solid var(--border); padding: 20px 24px;
+  text-align: center; font-size: .8rem; color: var(--ink-faint); line-height: 1.8;
+}
+footer strong { color: var(--ink-muted); }
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@media (max-width: 600px) {
+  header { padding: 28px 16px; }
+  main   { padding: 18px 14px 32px; }
+  #list  { grid-template-columns: 1fr; }
+  .filter-group { min-width: 100%; }
+  .btn-clear { width: 100%; text-align: center; }
+}
+.type-pill.sitio {
+  background: #ecfeff;
+  color: #155e75;
+}
+.sitio-toggle {
+  display: flex; align-items: center; gap: 6px;
+  margin-top: 10px; padding-top: 8px;
+  border-top: 1px dashed #a5f3fc;
+  border-left: none; border-right: none; border-bottom: none;
+  background: none; width: 100%; cursor: pointer;
+  font-family: 'Crimson Pro', serif; font-size: 11px;
+  font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase;
+  color: #0e7490; text-align: left; transition: color .2s;
+}
+.sitio-toggle:hover { color: #155e75; }
+.sitio-toggle.open .toggle-arrow { transform: rotate(180deg); }
+.sitio-drawer {
+  overflow: hidden; max-height: 0; opacity: 0;
+  transition: max-height .3s ease, opacity .25s ease;
+}
+.sitio-drawer.open { max-height: 2000px; opacity: 1; }
+.sitio-drawer-inner {
+  padding-top: 6px; padding-left: 12px;
+  border-left: 2px solid #a5f3fc; margin-left: 14px;
+}
+.card.is-sitio { box-shadow: none; border-color: #a5f3fc; margin-top: 5px; }
+.card.is-sitio::before { background: #0e7490; }
+</style>
+</head>
+<body>
+
+<div class="bunting" aria-hidden="true"></div>
+
+<header>
+  <p class="header-eyebrow">Province of Misamis Oriental</p>
+  <h1>&#127881; <em>Fiesta</em> Finder</h1>
+  <p class="header-sub">Patron saint celebrations across all municipalities &amp; cities</p>
+</header>
+
+<main>
+
+  <div id="today-banner" role="alert">
+    <div class="today-icon">&#127882;</div>
+    <div class="today-text">
+      <strong>Fiesta Today!</strong>
+      <span id="today-text-detail"></span>
+    </div>
+  </div>
+
+  <div class="filters-wrap">
+    <div class="filters-label">Filter &amp; Search</div>
+    <div class="filters-row">
+      <div class="filter-group">
+        <label for="monthFilter">Month</label>
+        <select id="monthFilter">
+          <option value="">All Months</option>
+          <option value="January">January</option>
+          <option value="February">February</option>
+          <option value="March">March</option>
+          <option value="April">April</option>
+          <option value="May">May</option>
+          <option value="June">June</option>
+          <option value="July">July</option>
+          <option value="August">August</option>
+          <option value="September">September</option>
+          <option value="October">October</option>
+          <option value="November">November</option>
+          <option value="December">December</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label for="patronFilter">Patron Saint</label>
+        <input type="text" id="patronFilter" placeholder="e.g. Sto. Nino, San Roque...">
+      </div>
+      <div class="filter-group">
+        <label for="placeFilter">Place</label>
+        <input type="text" id="placeFilter" placeholder="e.g. Tagoloan, Jasaan...">
+      </div>
+      <button class="btn-clear" id="btnClear" type="button">&#10005; Clear</button>
+    </div>
+  </div>
+
+  <div class="meta-bar">
+    <p class="result-count" id="resultCount"></p>
+    <div class="sort-wrap">
+      <label for="sortSelect">Sort:</label>
+      <select id="sortSelect">
+        <option value="date-asc">Date</option>
+        <option value="place-asc">Place A-Z</option>
+        <option value="month-asc">Month</option>
+      </select>
+    </div>
+  </div>
+
+  <div id="list"></div>
+
+</main>
+
+<footer>
+  <strong>Misamis Oriental Fiesta Directory</strong><br>
+  Patron saint celebrations across municipalities and component cities.<br>
+  &copy; <span id="footerYear"></span> &nbsp;&middot;&nbsp; Data is for reference only; dates may vary by local proclamation.
+</footer>
+
+<script>
+var FIESTAS = [
+  { place:"Misamis Oriental Province", patron:"Various / Kuyamis Festival", date:"January 6", month:"January", type:"province" },
+
+  { place:"Alubijid",     patron:"Sta. Elena",            date:"August 18",              month:"August",    type:"municipality" },
+  { place:"Poblacion",   patron:"Sta. Elena",            date:"August 18",              month:"August",    type:"barangay", parent:"Alubijid" },
+
+{ place:"Balingasag", patron:"Sto. Nino", date:"3rd Sunday of January", month:"January", type:"municipality" },
+{ place:"Dansuli", patron:"na", date:"January 5", month:"January", type:"barangay", parent:"Balingasag" },
+{ place:"Brgy. 1 (Poblacion)", patron:"Sto. Nino", date:"3rd Sun of January", month:"January", type:"barangay", parent:"Balingasag" },
+{ place:"Brgy. 2 (Poblacion)", patron:"Sto. Nino", date:"3rd Sun of January", month:"January", type:"barangay", parent:"Balingasag" },
+{ place:"Brgy. 3 (Poblacion)", patron:"Sto. Nino", date:"3rd Sun of January", month:"January", type:"barangay", parent:"Balingasag" },
+{ place:"Brgy. 4 (Poblacion)", patron:"Sto. Nino", date:"3rd Sun of January", month:"January", type:"barangay", parent:"Balingasag" },
+{ place:"Brgy. 5 (Poblacion)", patron:"Sto. Nino", date:"3rd Sun of January", month:"January", type:"barangay", parent:"Balingasag" },
+{ place:"Brgy. 6 (Poblacion)", patron:"Sto. Nino", date:"3rd Sun of January", month:"January", type:"barangay", parent:"Balingasag" },
+{ place:"Cogon", patron:"na", date:"3rd Sun of January", month:"January", type:"barangay", parent:"Balingasag" },
+{ place:"Linggangao", patron:"na", date:"3rd Sun of January", month:"January", type:"barangay", parent:"Balingasag" },
+{ place:"Binitinan", patron:"na", date:"February 11", month:"February", type:"barangay", parent:"Balingasag" },
+{ place:"Calawag", patron:"na", date:"April 8", month:"April", type:"barangay", parent:"Balingasag" },
+{ place:"Waterfall", patron:"na", date:"May 3", month:"May", type:"barangay", parent:"Balingasag" },
+{ place:"Camuayan", patron:"na", date:"November 23", month:"November", type:"barangay", parent:"Balingasag" },
+{ place:"Dumarait", patron:"na", date:"May 15", month:"May", type:"barangay", parent:"Balingasag" },
+{ place:"Linabu", patron:"na", date:"May 12", month:"May", type:"barangay", parent:"Balingasag" },
+{ place:"Mandangoa", patron:"na", date:"May 15", month:"May", type:"barangay", parent:"Balingasag" },
+{ place:"San Isidro Labrador", patron:"na", date:"May 15", month:"May", type:"barangay", parent:"Balingasag" },
+{ place:"Baliwagan", patron:"na", date:"June 27", month:"June", type:"barangay", parent:"Balingasag" },
+{ place:"Mambayaan", patron:"na", date:"August 16", month:"August", type:"barangay", parent:"Balingasag" },
+{ place:"Napaliran", patron:"na", date:"August 16", month:"August", type:"barangay", parent:"Balingasag" },
+{ place:"Rosario", patron:"na", date:"October 7", month:"October", type:"barangay", parent:"Balingasag" },
+{ place:"Hermano", patron:"na", date:"June 13", month:"June", type:"barangay", parent:"Balingasag" },
+{ place:"San Juan", patron:"na", date:"3rd Sun of November", month:"November", type:"barangay", parent:"Balingasag" },
+{ place:"Talusan", patron:"na", date:"November 28", month:"November", type:"barangay", parent:"Balingasag" },
+{ place:"San Francisco", patron:"na", date:"December 3", month:"December", type:"barangay", parent:"Balingasag" },
+{ place:"Blanco", patron:"na", date:"December 8", month:"December", type:"barangay", parent:"Balingasag" },
+{ place:"Quezon", patron:"na", date:"December 8", month:"December", type:"barangay", parent:"Balingasag" },
+{ place:"Kibanban", patron:"na", date:"December 15", month:"December", type:"barangay", parent:"Balingasag" },
+{ place:"Balaghan", patron:"na", date:"December 19", month:"December", type:"barangay", parent:"Balingasag" },
+{ place:"Samay", patron:"na", date:"December 29", month:"December", type:"barangay", parent:"Balingasag" },
+ 
+{ place:"Balingoan",    patron:"San Alonzo de Rodriguez",             date:"May 29",              month:"May",    type:"municipality" },
+{ place:"Kabulakan", patron:"na", date:"March 11", month:"March", type:"barangay", parent:"Balingoan" },
+{ place:"Mapua", patron:"Sr. San Vicente Ferrer", date:"April 30", month:"April", type:"barangay", parent:"Balingoan" },
+{ place:"San Alonzo", patron:"na", date:"April 5", month:"April", type:"barangay", parent:"Balingoan" },
+{ place:"Mantangale", patron:"na", date:"May 29", month:"May", type:"barangay", parent:"Balingoan" },
+{ place:"Lapinig (Poblacion)", patron:"San Alonzo de Rodriguez", date:"May 29", month:"May", type:"barangay", parent:"Balingoan" },
+{ place:"Dahilig", patron:"na", date:"August 12", month:"August", type:"barangay", parent:"Balingoan" },
+{ place:"Bauk-Bauk", patron:"na", date:"August 15", month:"August", type:"barangay", parent:"Balingoan" },
+{ place:"Kabangasan", patron:"na", date:"August 16", month:"August", type:"barangay", parent:"Balingoan" },
+{ place:"Kauswagan", patron:"na", date:"September 9", month:"September", type:"barangay", parent:"Balingoan" },
+
+
+{ place:"Binuangan", patron:"Our Lady of Lourdes",   date:"February 11",            month:"February",  type:"municipality" },
+{ place:"Festival", patron:"Patunob Festival",      date:"February 11",            month:"February",  type:"barangay", parent:"Binuangan" },
+{ place:"Poblacion (Binuangan)", patron:"Our Lady of Lourdes", date:"February 11", month:"February", type:"barangay", parent:"Binuangan" },
+{ place:"Mosangot", patron:"Our Lady of Lourdes", date:"February 11", month:"February", type:"barangay", parent:"Binuangan" },
+{ place:"Kitamban", patron:"Our Lady of Lourdes", date:"February 11", month:"February", type:"barangay", parent:"Binuangan" },
+{ place:"Kitambis", patron:"Our Lady of Lourdes", date:"February 11", month:"February", type:"barangay", parent:"Binuangan" },
+{ place:"Mabini", patron:"na", date:"May 2", month:"May", type:"barangay", parent:"Binuangan" },
+{ place:"Nabataan", patron:"na", date:"May 5", month:"May", type:"barangay", parent:"Binuangan" },
+{ place:"Dampias", patron:"Holy Cross", date:"September 14", month:"September", type:"barangay", parent:"Binuangan" },
+{ place:"Valdeconcha", patron:"na", date:"May 14", month:"May", type:"barangay", parent:"Binuangan" },
+
+
+
+  { place:"Claveria",     patron:"Our Lady of Lourdes",   date:"February 11",            month:"February",  type:"municipality" },
+  { place:"Festival",     patron:"Mais Festival",         date:"Mid-July",                month:"July",      type:"barangay", parent:"Claveria" },
+  { place:"Poblacion",    patron:"Our Lady of Lourdes",   date:"February 11",            month:"February",  type:"barangay", parent:"Claveria" },
+  { place:"Hinaplanan",   patron:"San Isidro Labrador",   date:"May 15",                 month:"May",       type:"barangay", parent:"Claveria" },
+  { place:"Mat-i",        patron:"Sto. Niño",             date:"December 13",            month:"December",  type:"barangay", parent:"Claveria" },
+
+  { place:"Gitagum",      patron:"St. Vincent Ferrer",    date:"April 5",                month:"April",     type:"municipality" },
+  { place:"Poblacion",    patron:"Sto. Niño",             date:"3rd Sunday of January",  month:"January",   type:"barangay", parent:"Gitagum" },
+
+  { place:"Initao",       patron:"Saint Francis Xavier",  date:"December 3",             month:"December",  type:"municipality" },
+  { place:"Festival",     patron:"Lantawanan Festival",   date:"Nov 24 - Dec 3",         month:"November",  type:"barangay", parent:"Initao" },
+  { place:"Poblacion",    patron:"Saint Francis Xavier",  date:"December 3",             month:"December",  type:"barangay", parent:"Initao" },
+
+  { place:"Jasaan",       patron:"Immaculate Conception", date:"December 8",             month:"December",  type:"municipality" },
+  { place:"Poblacion",    patron:"Immaculate Conception", date:"December 8",             month:"December",  type:"barangay", parent:"Jasaan" },
+  { place:"Bobontugan",   patron:"Our Lady of Mt. Carmel",date:"July 16",                month:"July",      type:"barangay", parent:"Jasaan" },
+
+  { place:"Kinoguitan",   patron:"Sto. Niño",             date:"July 25",                month:"July",      type:"municipality" },
+  { place:"Poblacion",    patron:"Sto. Niño",             date:"July 25",                month:"July",      type:"barangay", parent:"Kinoguitan" },
+
+{ place:"Lagonglong",   patron:"St. John the Baptist",  date:"June 24",                month:"June",      type:"municipality" },
+{ place:"Kauswagan", patron:"Sto. Niño", date:"4th Sun of January", month:"January", type:"barangay", parent:"Lagonglong" },
+{ place:"Manaol", patron:"Sto. Niño", date:"4th Sun of January", month:"January", type:"barangay", parent:"Lagonglong" },
+{ place:"Gaston", patron:"St. John the Baptist", date:"June 22", month:"June", type:"barangay", parent:"Lagonglong" },
+{ place:"Umagos", patron:"St. John the Baptist", date:"June 23", month:"June", type:"barangay", parent:"Lagonglong" },
+         { place:"Sitio Kapatagan, Umagos", patron:"San Jose", date:"March 21", month:"March", type:"sitio", parent:"Umagos" },
+{ place:"Poblacion (Lagonglong)", patron:"St. John the Baptist", date:"June 24", month:"June", type:"barangay", parent:"Lagonglong" },
+{ place:"Kabulawan", patron:"St. John the Baptist", date:"June 24", month:"June", type:"barangay", parent:"Lagonglong" },
+{ place:"Lumbo", patron:"St. John the Baptist", date:"June 24", month:"June", type:"barangay", parent:"Lagonglong" },
+{ place:"Tabok", patron:"St. John the Baptist", date:"June 24", month:"June", type:"barangay", parent:"Lagonglong" },
+{ place:"Dampil", patron:"San Nicholas de Tolentino", date:"September 10", month:"September", type:"barangay", parent:"Lagonglong" },
+{ place:"Banglay", patron:"St. Joseph the Worker", date:"September 14", month:"September", type:"barangay", parent:"Lagonglong" },
+
+
+
+  { place:"Laguindingan", patron:"Holy Cross",            date:"September 14",           month:"September", type:"municipality" },
+  { place:"Poblacion",    patron:"Holy Cross",            date:"September 14",           month:"September", type:"barangay", parent:"Laguindingan" },
+
+  { place:"Libertad",     patron:"San Isidro Labrador",   date:"May 15",                 month:"May",       type:"municipality" },
+  { place:"Poblacion",    patron:"San Isidro Labrador",   date:"May 15",                 month:"May",       type:"barangay", parent:"Libertad" },
+
+  { place:"Lugait",       patron:"San Isidro Labrador",   date:"May 15",                 month:"May",       type:"municipality" },
+  { place:"Poblacion",    patron:"San Isidro Labrador",   date:"May 15",                 month:"May",       type:"barangay", parent:"Lugait" },
+
+  { place:"Magsaysay",    patron:"San Roque",             date:"August 16",              month:"August",    type:"municipality" },
+  { place:"Poblacion",    patron:"San Roque",             date:"August 15-16",           month:"August",    type:"barangay", parent:"Magsaysay" },
+  { place:"Damayuhan",    patron:"Sta. Cruz",             date:"May 2-3",                month:"May",       type:"barangay", parent:"Magsaysay" },
+
+  { place:"Manticao",     patron:"San Antonio de Padua",  date:"June 13",                month:"June",      type:"municipality" },
+  { place:"Founding Anniversary", patron:"Bibingka Festival", date:"February 1–7",       month:"February",  type:"barangay", parent:"Manticao" },
+  { place:"Poblacion",    patron:"San Antonio de Padua",  date:"June 13",                month:"June",      type:"barangay", parent:"Manticao" },
+  { place:"Punta Silum",  patron:"Sto. Niño",             date:"January",                month:"January",   type:"barangay", parent:"Manticao" },
+
+  { place:"Medina",       patron:"Our Lady of the Holy Rosary", date:"October 7",        month:"October",   type:"municipality" },
+  { place:"Poblacion",    patron:"Our Lady of the Holy Rosary", date:"October 7",        month:"October",   type:"barangay", parent:"Medina" },
+
+  { place:"Naawan",       patron:"San Isidro Labrador",   date:"May 15",                 month:"May",       type:"municipality" },
+  { place:"Festival",     patron:"Wahig Festival",        date:"May 14-15",              month:"May",       type:"barangay", parent:"Naawan" },
+  { place:"Poblacion",    patron:"San Isidro Labrador",   date:"May 15",                 month:"May",       type:"barangay", parent:"Naawan" },
+
+  { place:"Opol",             patron:"Sts. Peter and Paul",   date:"June 29",            month:"June",      type:"municipality" },
+  { place:"Poblacion (Opol)", patron:"Birhen sa Kalipay",     date:"1st Sunday of September", month:"September", type:"barangay", parent:"Opol" },
+  { place:"Luyong Bonbon",    patron:"San Isidro Labrador",   date:"May 15",             month:"May",       type:"barangay", parent:"Opol" },
+  { place:"Bonbon",           patron:"San Isidro Labrador",   date:"May 15",             month:"May",       type:"barangay", parent:"Opol" },
+
+{ place:"Salay", patron:"St. Joseph the Worker", date:"May 2", month:"May", type:"municipality" },
+{ place:"Matampa", patron:"na", date:"3rd Sat of January", month:"January", type:"barangay", parent:"Salay" },
+{ place:"Salay River-2", patron:"na", date:"Last Sat of January", month:"January", type:"barangay", parent:"Salay" },
+{ place:"Casulog", patron:"Solemnity of Saint Joseph", date:"March 19", month:"March", type:"barangay", parent:"Salay" },
+{ place:"Salay River-1", patron:"Solemnity of Saint Joseph", date:"March 19", month:"March", type:"barangay", parent:"Salay" },
+{ place:"Salagsag", patron:"na", date:"April 5", month:"April", type:"barangay", parent:"Salay" },
+{ place:"Poblacion (Salay)", patron:"St. Joseph the Worker", date:"May 2", month:"May", type:"barangay", parent:"Salay" },
+{ place:"Looc", patron:"na", date:"May 3", month:"May", type:"barangay", parent:"Salay" },
+{ place:"Tinagaan", patron:"na", date:"May 8", month:"May", type:"barangay", parent:"Salay" },
+{ place:"Dinagsaan", patron:"na", date:"2nd Sat of May", month:"May", type:"barangay", parent:"Salay" },
+{ place:"Ampenican", patron:"na", date:"2nd Sat of May", month:"May", type:"barangay", parent:"Salay" },
+{ place:"Guinalaban", patron:"na", date:"May 13", month:"May", type:"barangay", parent:"Salay" },
+{ place:"Membuli", patron:"na", date:"May 16", month:"May", type:"barangay", parent:"Salay" },
+{ place:"Ili-Ilihon", patron:"na", date:"June 13", month:"June", type:"barangay", parent:"Salay" },
+{ place:"Inobulan", patron:"na", date:"June 27", month:"June", type:"barangay", parent:"Salay" },
+{ place:"Saray", patron:"na", date:"August 16", month:"August", type:"barangay", parent:"Salay" },
+{ place:"Yungod", patron:"na", date:"September 14", month:"September", type:"barangay", parent:"Salay" },
+{ place:"Alipuaton", patron:"na", date:"October 4", month:"October", type:"barangay", parent:"Salay" },
+       
+       
+  { place:"Sugbongcogon", patron:"St. Anthony of Padua",  date:"June 13",                month:"June",      type:"municipality" },
+  { place:"Poblacion",    patron:"St. Anthony of Padua",  date:"June 13",                month:"June",      type:"barangay", parent:"Sugbongcogon" },
+
+{ place:"Tagoloan", patron:"Nuestra Senora de la Candelaria", date:"February 2", month:"February", type:"municipality" },
+{ place:"Baluarte", patron:"Sta. Rosario", date:"October 24", month:"October", type:"barangay", parent:"Tagoloan" },
+{ place:"Santa Ana", patron:"Sto. Nino", date:"3rd Sun of January", month:"January", type:"barangay", parent:"Tagoloan" },
+{ place:"Poblacion (Tagoloan)", patron:"Nuestra Senora de la Candelaria", date:"February 2", month:"February", type:"barangay", parent:"Tagoloan" },
+{ place:"Gracia", patron:"San Vicente Ferrer", date:"April 5", month:"April", type:"barangay", parent:"Tagoloan" },
+{ place:"Natumolan", patron:"na", date:"May 3", month:"May", type:"barangay", parent:"Tagoloan" },
+{ place:"Santa Cruz", patron:"na", date:"May 3", month:"May", type:"barangay", parent:"Tagoloan" },
+{ place:"Casinglot", patron:"na", date:"June 24", month:"June", type:"barangay", parent:"Tagoloan" },
+{ place:"Rosario", patron:"na", date:"October 7", month:"October", type:"barangay", parent:"Tagoloan" },
+{ place:"Mohon", patron:"St. Francis Xavier", date:"December 3", month:"December", type:"barangay", parent:"Tagoloan" },
+{ place:"Sugbongcogon (Tagoloan)", patron:"Immaculate Conception", date:"December 8", month:"December", type:"barangay", parent:"Tagoloan" },
+
+
+  { place:"Talisayan",    patron:"Our Lady of Mt. Carmel", date:"July 16",                month:"July",      type:"municipality" },
+  { place:"Poblacion",    patron:"Our Lady of Mt. Carmel", date:"July 16",                month:"July",      type:"barangay", parent:"Talisayan" },
+
+  { place:"Villanueva",   patron:"Our Lady of Guadalupe",  date:"December 12",            month:"December",  type:"municipality" },
+  { place:"Poblacion",    patron:"Our Lady of Guadalupe",  date:"December 12",            month:"December",  type:"barangay", parent:"Villanueva" },
+
+  { place:"El Salvador City",    patron:"Divine Mercy",              date:"April 2",      month:"April",     type:"city" },
+  { place:"Cagayan de Oro City", patron:"St. Augustine",             date:"August 28",    month:"August",    type:"city" },
+  { place:"Gingoog City",        patron:"St. Michael the Archangel", date:"September 29", month:"September", type:"city" }
+];
+
+var MONTH_ORDER = {
+  January:1,February:2,March:3,April:4,May:5,June:6,
+  July:7,August:8,September:9,October:10,November:11,December:12
+};
+
+var today        = new Date();
+var todayMonth   = today.toLocaleString('en-US',{month:'long'});
+var todayDay     = today.getDate();
+var todayDateStr = todayMonth + ' ' + todayDay;
+
+var listEl       = document.getElementById('list');
+var monthFilter  = document.getElementById('monthFilter');
+var patronFilter = document.getElementById('patronFilter');
+var placeFilter  = document.getElementById('placeFilter');
+var sortSelect   = document.getElementById('sortSelect');
+var resultCount  = document.getElementById('resultCount');
+var btnClear     = document.getElementById('btnClear');
+var todayBanner  = document.getElementById('today-banner');
+var todayDetail  = document.getElementById('today-text-detail');
+
+var todayFiestas = FIESTAS.filter(function(f){ return f.date === todayDateStr; });
+if (todayFiestas.length > 0) {
+  var tNames   = todayFiestas.map(function(f){ return '<strong>' + f.place + '</strong>'; }).join(', ');
+  var tPatrons = todayFiestas.map(function(f){ return f.patron; })
+    .filter(function(v,i,a){ return a.indexOf(v) === i; }).join(' & ');
+  todayDetail.innerHTML = 'Today is fiesta day in ' + tNames + ' &mdash; celebrating <em>' + tPatrons + '</em>.';
+  todayBanner.classList.add('visible');
+}
+
+function sortData(arr) {
+  var mode = sortSelect.value;
+  return arr.slice().sort(function(a,b){
+    if (mode === 'place-asc') return a.place.localeCompare(b.place);
+    if (mode === 'month-asc') return MONTH_ORDER[a.month] - MONTH_ORDER[b.month];
+    var am = MONTH_ORDER[a.month], bm = MONTH_ORDER[b.month];
+    var ad = parseInt(a.date)||0, bd = parseInt(b.date)||0;
+    return am !== bm ? am - bm : ad - bd;
+  });
+}
+
+function esc(s) {
+  return String(s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function cardInner(f) {
+  var isToday  = (f.date === todayDateStr);
+  var todayTag = isToday ? '<span class="today-tag">&#127882; Today!</span>' : '';
+  var pill = (f.type==='province') ? '<span class="type-pill municipality">Province</span>'
+           : (f.type==='city')     ? '<span class="type-pill city">City</span>'
+           : (f.type==='barangay') ? '<span class="type-pill barangay">Barangay</span>'
+           : (f.type==='sitio')    ? '<span class="type-pill sitio">Sitio</span>'
+           :                         '<span class="type-pill municipality">Municipality</span>';
+  return '<div class="card-header">'
+    + '<div class="place">' + esc(f.place) + '</div>'
+    + '<div style="display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end">' + todayTag + pill + '</div>'
+    + '</div>'
+    + '<div class="card-date"><span class="date-icon">&#128197;</span>'
+    + '<span class="date-text"><strong>' + esc(f.date) + '</strong> &nbsp;&middot;&nbsp; ' + esc(f.month) + '</span></div>'
+    + '<div class="patron-row"><span class="patron-label">Patron</span>'
+    + '<span class="patron-name">' + esc(f.patron) + '</span></div>';
+}
+
+function render(data, autoOpen) {
+  autoOpen = autoOpen || {};
+  var sitios     = data.filter(function(f){ return f.type === 'sitio'; });
+  var barangays  = data.filter(function(f){ return f.type === 'barangay'; });
+  var mainPlaces = data.filter(function(f){ return f.type !== 'barangay' && f.type !== 'sitio'; });
+
+  var childMap = {};
+  barangays.forEach(function(f){
+    if (!childMap[f.parent]) childMap[f.parent] = [];
+    childMap[f.parent].push(f);
+  });
+
+  var sitioMap = {};
+  sitios.forEach(function(f){
+    if (!sitioMap[f.parent]) sitioMap[f.parent] = [];
+    sitioMap[f.parent].push(f);
+  });
+
+  resultCount.innerHTML = 'Showing <strong>' + data.length + '</strong> of ' + FIESTAS.length + ' celebrations';
+
+  if (!mainPlaces.length && !barangays.length) {
+    listEl.innerHTML = '<div class="empty-state">'
+      + '<div class="empty-icon">&#128269;</div><h3>No fiestas found</h3>'
+      + '<p>Try adjusting your search or clearing the filters.</p></div>';
+    return;
+  }
+
+  var html = sortData(mainPlaces).map(function(f, i) {
+    var isToday = (f.date === todayDateStr);
+    var isCity  = (f.type === 'city');
+    var cls = 'card' + (isToday?' is-today':'') + (isCity?' is-city':'');
+    var delay = Math.min(i * 30, 300);
+    var kids = childMap[f.place] || [];
+    var open = !!autoOpen[f.place];
+
+    var toggleBtn = '';
+    if (kids.length) {
+      var lbl = kids.length === 1 ? '1 Barangay' : kids.length + ' Barangays';
+      toggleBtn = '<button class="barangay-toggle' + (open?' open':'')
+        + '" onclick="toggleDrawer(this)" aria-expanded="' + open + '">'
+        + '<span class="toggle-arrow">&#9660;</span> ' + lbl + '</button>';
+    }
+
+    var drawer = '';
+    if (kids.length) {
+      var kidCards = kids.map(function(c){
+        var cToday = (c.date === todayDateStr);
+        var cCls = 'card is-barangay' + (cToday?' is-today':'');
+
+        var sitioKids = sitioMap[c.place] || [];
+        var sitioHTML = '';
+        if (sitioKids.length) {
+          var sLbl = sitioKids.length === 1 ? '1 Sitio' : sitioKids.length + ' Sitios';
+          var sitioToggle = '<button class="sitio-toggle" onclick="toggleSitioDrawer(this)" aria-expanded="false">'
+            + '<span class="toggle-arrow" style="font-size:10px;transition:transform .25s ease;display:inline-block;">&#9660;</span> '
+            + sLbl + '</button>';
+          var sitioCards = sitioKids.map(function(s){
+            var sToday = (s.date === todayDateStr);
+            var sCls = 'card is-sitio' + (sToday?' is-today':'');
+            return '<div class="' + sCls + '">' + cardInner(s) + '</div>';
+          }).join('');
+          sitioHTML = sitioToggle
+            + '<div class="sitio-drawer">'
+            + '<div class="sitio-drawer-inner">' + sitioCards + '</div>'
+            + '</div>';
+        }
+
+        return '<div class="' + cCls + '">'
+          + cardInner(c)
+          + sitioHTML
+          + '</div>';
+      }).join('');
+
+      drawer = '<div class="barangay-drawer' + (open?' open':'') + '">'
+        + '<div class="barangay-drawer-inner">' + kidCards + '</div></div>';
+    }
+
+    return '<div class="card-group"><div class="' + cls + '" style="animation-delay:' + delay + 'ms">'
+      + cardInner(f) + toggleBtn + '</div>' + drawer + '</div>';
+  }).join('');
+
+  listEl.innerHTML = html;
+}
+
+function toggleDrawer(btn) {
+  var group  = btn.parentElement.parentElement;
+  var drawer = group.querySelector('.barangay-drawer');
+  if (!drawer) return;
+  var isOpen = drawer.classList.contains('open');
+  drawer.classList.toggle('open', !isOpen);
+  btn.classList.toggle('open', !isOpen);
+  btn.setAttribute('aria-expanded', String(!isOpen));
+}
+
+function toggleSitioDrawer(btn) {
+  var card   = btn.parentElement;
+  var drawer = card.querySelector('.sitio-drawer');
+  if (!drawer) return;
+  var isOpen = drawer.classList.contains('open');
+  drawer.classList.toggle('open', !isOpen);
+  btn.classList.toggle('open', !isOpen);
+  btn.setAttribute('aria-expanded', String(!isOpen));
+}
+
+function applyFilters() {
+  var month  = monthFilter.value;
+  var patron = patronFilter.value.trim().toLowerCase();
+  var place  = placeFilter.value.trim().toLowerCase();
+
+  var matched = FIESTAS.filter(function(f){
+    var mOk = !month  || f.month === month;
+    var pOk = !patron || f.patron.toLowerCase().indexOf(patron) !== -1;
+    var lOk = !place
+      || f.place.toLowerCase().indexOf(place) !== -1
+      || (f.parent && f.parent.toLowerCase().indexOf(place) !== -1);
+    return mOk && pOk && lOk;
+  });
+
+  var autoOpen = {};
+  // Ensure parent municipalities are present when a matched barangay is found
+  matched.filter(function(f){ return f.type === 'barangay'; }).forEach(function(f){
+    autoOpen[f.parent] = true;
+    var hasParent = matched.some(function(m){ return m.place === f.parent; });
+    if (!hasParent) {
+      var par = FIESTAS.filter(function(m){ return m.place === f.parent; })[0];
+      if (par) matched.push(par);
+    }
+  });
+  // Ensure parent barangay and municipality are present when a matched sitio is found
+  matched.filter(function(f){ return f.type === 'sitio'; }).forEach(function(f){
+    var parentBrgy = FIESTAS.filter(function(m){ return m.place === f.parent; })[0];
+    if (parentBrgy) {
+      autoOpen[parentBrgy.parent] = true;
+      var hasBrgy = matched.some(function(m){ return m.place === parentBrgy.place; });
+      if (!hasBrgy) matched.push(parentBrgy);
+      var hasMuni = matched.some(function(m){ return m.place === parentBrgy.parent; });
+      if (!hasMuni) {
+        var muni = FIESTAS.filter(function(m){ return m.place === parentBrgy.parent; })[0];
+        if (muni) matched.push(muni);
+      }
+    }
+  });
+
+  render(matched, autoOpen);
+}
+
+function clearFilters() {
+  monthFilter.value  = '';
+  patronFilter.value = '';
+  placeFilter.value  = '';
+  render(FIESTAS);
+}
+
+monthFilter.addEventListener('change', applyFilters);
+patronFilter.addEventListener('input',  applyFilters);
+placeFilter.addEventListener('input',   applyFilters);
+sortSelect.addEventListener('change',   applyFilters);
+btnClear.addEventListener('click',      clearFilters);
+document.addEventListener('keydown', function(e){ if (e.key==='Escape') clearFilters(); });
+
+document.getElementById('footerYear').textContent = new Date().getFullYear();
+render(FIESTAS);
+</script>
+</body>
+</html>
