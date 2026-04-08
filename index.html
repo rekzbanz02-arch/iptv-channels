@@ -562,7 +562,85 @@
 <script>
 // ── Channel Definitions ───────────────────────────────────────────────────────
 const channels = [
+/* =======================
+   📰 NEWS
+======================= */
+{
+  name: "Al Jazeera (EN)",
+  logo: "https://banner2.cleanpng.com/lnd/20241222/co/7ecae26be24abecd6496b79d6eb7b7.webp",
+  url: "https://live-hls-apps-aje-v3-fa.getaj.net/AJE/index.m3u8",
+  group: "News"
+},
+  {
+  name: "BBC World News",
+  logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/BBC_World_News_2022.svg/2560px-BBC_World_News_2022.svg.png",
+  url: "https://vs-hls-push-ww-live.akamaized.net/x=4/i=urn:bbc:pips:service:bbc_news_channel_hd/t=3840/v=pv14/b=5070016/main.m3u8",
+  group: "News"
+},
+{
+  name: "FOX News Live",
+  logo: "https://static.foxnews.com/foxnews.com/content/uploads/2022/09/Fox-News-Live.png",
+  url: "https://fox-foxnewsnow-vizio.amagi.tv/playlist.m3u8",
+  group: "News"
+},
+{
+  name: "NHK World Japan",
+  logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/NHK_World-Japan_TV.svg/1280px-NHK_World-Japan_TV.svg.png",
+  url: "https://nhkwlive-ojp.akamaized.net/hls/live/2003459/nhkwlive-ojp-en/index.m3u8",
+  group: "News"
+},
+{
+  name: "CNN",
+  logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/CNN.svg/1280px-CNN.svg.png",
+  url: "https://turnerlive.warnermediacdn.com/hls/live/586495/cnngo/cnn_slate/VIDEO_0_3564000.m3u8",
+  group: "News"
+},
+{
+  name: "Bloomberg Asia",
+  logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/New_Bloomberg_Logo.svg/1280px-New_Bloomberg_Logo.svg.png",
+  url: "https://www.bloomberg.com/media-manifest/streams/asia.m3u8",
+  group: "News"
+},
+{
+  name: "Leadstory Breaking News",
+  logo: "https://cdn-icons-png.flaticon.com/512/2965/2965567.png",
+  url: "https://amg02703-amg02703c17-samsung-ph-4546.playouts.now.amagi.tv/playlist.m3u8",
+  group: "News"
+},
 
+  /* =======================
+   🇵🇭 PHILIPPINE CHANNELS
+======================= */
+{
+  name: "Abante",
+  logo: "https://www.abante.com.ph/wp-content/uploads/2023/09/cropped-abante-logo-small.png",
+  url: "https://amg19223-amg19223c12-amgplt0352.playout.now3.amagi.tv/playlist/amg19223-amg19223c12-amgplt0352/playlist.m3u8",
+  group: "Philippine Channels"
+},
+{
+  name: "Bilyonaryo News Channel",
+  logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/BilyonaryoNewsChannel_Logo_-_Black_%282024%29.png/1024px-BilyonaryoNewsChannel_Logo_-_Black_%282024%29.png",
+  url: "https://amg19223-amg19223c11-amgplt0352.playout.now3.amagi.tv/playlist/amg19223-amg19223c11-amgplt0352/playlist.m3u8",
+  group: "Philippine Channels"
+},
+{
+  name: "FilAm TV Network",
+  logo: "https://upload.wikimedia.org/wikipedia/en/thumb/6/6d/Cinema_One_2013_logo.svg/512px-Cinema_One_2013_logo.svg.png",
+  url: "https://streams.comclark.com/pknsd/filamtv/playlist.m3u8",
+  group: "Philippine Channels"
+},
+{
+  name: "Mindanao Network TV",
+  logo: "https://cdn-icons-png.flaticon.com/512/1046/1046876.png",
+  url: "https://streams.comclark.com/overlay/mindanow/playlist.m3u8",
+  group: "Philippine Channels"
+},
+{
+  name: "Hope Channel Philippines",
+  logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Hope_Channel.svg/512px-Hope_Channel.svg.png",
+  url: "https://jstre.am/live/jsl:7A1swL7Fhlh.m3u8",
+  group: "Philippine Channels"
+},
 /* ========================
    📡 ABS-CBN (MPEG-DASH)
 ======================== */
@@ -621,84 +699,7 @@ const channels = [
     group: "New Channels"
 },
   
-/* =======================
-   🇵🇭 PHILIPPINE CHANNELS
-======================= */
-{
-  name: "Abante",
-  logo: "https://www.abante.com.ph/wp-content/uploads/2023/09/cropped-abante-logo-small.png",
-  url: "https://amg19223-amg19223c12-amgplt0352.playout.now3.amagi.tv/playlist/amg19223-amg19223c12-amgplt0352/playlist.m3u8",
-  group: "Philippine Channels"
-},
-{
-  name: "Bilyonaryo News Channel",
-  logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/BilyonaryoNewsChannel_Logo_-_Black_%282024%29.png/1024px-BilyonaryoNewsChannel_Logo_-_Black_%282024%29.png",
-  url: "https://amg19223-amg19223c11-amgplt0352.playout.now3.amagi.tv/playlist/amg19223-amg19223c11-amgplt0352/playlist.m3u8",
-  group: "Philippine Channels"
-},
-{
-  name: "FilAm TV Network",
-  logo: "https://upload.wikimedia.org/wikipedia/en/thumb/6/6d/Cinema_One_2013_logo.svg/512px-Cinema_One_2013_logo.svg.png",
-  url: "https://streams.comclark.com/pknsd/filamtv/playlist.m3u8",
-  group: "Philippine Channels"
-},
-{
-  name: "Mindanao Network TV",
-  logo: "https://cdn-icons-png.flaticon.com/512/1046/1046876.png",
-  url: "https://streams.comclark.com/overlay/mindanow/playlist.m3u8",
-  group: "Philippine Channels"
-},
-{
-  name: "Hope Channel Philippines",
-  logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Hope_Channel.svg/512px-Hope_Channel.svg.png",
-  url: "https://jstre.am/live/jsl:7A1swL7Fhlh.m3u8",
-  group: "Philippine Channels"
-},
-/* =======================
-   📰 NEWS
-======================= */
-{
-  name: "Al Jazeera (EN)",
-  logo: "https://banner2.cleanpng.com/lnd/20241222/co/7ecae26be24abecd6496b79d6eb7b7.webp",
-  url: "https://live-hls-apps-aje-v3-fa.getaj.net/AJE/index.m3u8",
-  group: "News"
-},
-  {
-  name: "BBC World News",
-  logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/BBC_World_News_2022.svg/2560px-BBC_World_News_2022.svg.png",
-  url: "https://vs-hls-push-ww-live.akamaized.net/x=4/i=urn:bbc:pips:service:bbc_news_channel_hd/t=3840/v=pv14/b=5070016/main.m3u8",
-  group: "News"
-},
-{
-  name: "FOX News Live",
-  logo: "https://static.foxnews.com/foxnews.com/content/uploads/2022/09/Fox-News-Live.png",
-  url: "https://fox-foxnewsnow-vizio.amagi.tv/playlist.m3u8",
-  group: "News"
-},
-{
-  name: "NHK World Japan",
-  logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/NHK_World-Japan_TV.svg/1280px-NHK_World-Japan_TV.svg.png",
-  url: "https://nhkwlive-ojp.akamaized.net/hls/live/2003459/nhkwlive-ojp-en/index.m3u8",
-  group: "News"
-},
-{
-  name: "CNN",
-  logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/CNN.svg/1280px-CNN.svg.png",
-  url: "https://turnerlive.warnermediacdn.com/hls/live/586495/cnngo/cnn_slate/VIDEO_0_3564000.m3u8",
-  group: "News"
-},
-{
-  name: "Bloomberg Asia",
-  logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/New_Bloomberg_Logo.svg/1280px-New_Bloomberg_Logo.svg.png",
-  url: "https://www.bloomberg.com/media-manifest/streams/asia.m3u8",
-  group: "News"
-},
-{
-  name: "Leadstory Breaking News",
-  logo: "https://cdn-icons-png.flaticon.com/512/2965/2965567.png",
-  url: "https://amg02703-amg02703c17-samsung-ph-4546.playouts.now.amagi.tv/playlist.m3u8",
-  group: "News"
-},
+
 
 /* =======================
    ⚽ SPORTS
